@@ -10,15 +10,10 @@ def add_kw(keyword, tree):
         print 'Must be at least 1 character long'
         return
     
-    # Starting point
-    head = tree
-    
     for letter in keyword:
-        if head.get(letter):
-            head = head[letter]
-        else:
-            head[letter] = {}
-            head = head[letter]
+        if not tree.get(letter):
+            tree[letter] = {}
+        tree = tree[letter]
             
     return tree
 
