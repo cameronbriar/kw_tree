@@ -3,83 +3,89 @@ import json
 # Our keyword tree basically a dictionary
 kw_tree = dict()
 
-# Let's define an add module
+# What is a keyword
+def is_good_keyword(keyword):
+    # It must:
+    # not be empty or contain whitespace
+    if keyword.strip() == "" or " " in keyword:
+        return False
+
+    return True
+
+# What is a kw tree?
+def is_good_tree(tree):
+    return isinstance(tree, dict)
+
+
+def validate_kw_tree(kw, tree):
+    return is_good_keyword(kw) and is_good_tree(tree)
+
+ 
 def add_kw(keyword, tree):
-    
-    if keyword.strip() == "":
-        print 'Must be at least 1 character long'
-        return
-    
+    print 'adding', keyword
     for letter in keyword:
-        if not tree.get(letter):
+        if tree.get(letter) == None:
             tree[letter] = {}
         tree = tree[letter]
-            
-    return tree
+    print keyword, 'was added'
 
 
-# Let's define a get module
-def get_kw(keyword, tree):
-    
-    if keyword.strip() == "":
-        print 'Must be at least 1 character long'
-        return
-    
-    # Starting point
-    head = tree
-    
+def has_kw(keyword, tree):
+    print 'checking for', keyword
     for letter in keyword:
-        if head.get(letter) != None:
-            head = head[letter]
-        else:
+        if tree.get(letter) == None:
+            print keyword, 'not in tree'
             return False
+        tree = tree[letter]
+    print keyword, 'found'
     return True
 
-# Let's define a remove module
+
+# ...
 def del_kw(keyword, tree):
-    
-    if keyword.strip() == "":
-        print 'Must be at least 1 character long'
-        return
-    
-    # Starting point
-    head = tree
-    
-    # This list stores the path to the last letter of the keyword
-    # (helps you delete and take a step backward)
+    print 'deleting', keyword
+
     prev_pos = []
-    
+
     for letter in keyword[:-1]:
-        if head.get(letter) != None:
-            prev_pos.append(head)
-            head = head[letter]
+        if tree.get(letter) != None:
+            prev_pos.append(tree)
+            tree = tree[letter]
         else:
-            print 'Word not found'
+            print keyword, 'was not found to delete'
             return False
         
-    curr = len(keyword) - 1
     for letter in keyword[::-1]:
-        if head.get(letter) == {}:
-            del(head[letter])
-            head = prev_pos.pop()
-        else:
-            print 'Keyword removed'
+        if tree.get(letter) == {}:
+            del(tree[letter])
+            tree = prev_pos.pop()
     
-    del(prev_pos)
+    print keyword, 'removed'
     return True
+
+# Pretty print a tree
+def ptree(tree):
+    print json.dumps(tree, indent=1)
     
 # TEST
 
-print "KW: Add 'test' --", add_kw("test", kw_tree)
-print "KW: Add 'true' --", add_kw("true", kw_tree)
-print "KW: Add 'alpha' --", add_kw("alpha", kw_tree)
+tree = kw_tree
+good_kw0 = "test"
+good_kw1 = "true"
+good_kw2 = "temp"
+bad_kw0  = "bad"
 
-print json.dumps(kw_tree, indent=1)
+add_kw(good_kw0, tree)
+add_kw(good_kw1, tree)
+add_kw(good_kw2, tree)
 
-print "KW: Has 'tire' -- ", get_kw("tire", kw_tree) # should be False
-print "KW: Has 'true' -- ", get_kw("true", kw_tree) # should be True
+print has_kw(good_kw0, tree)
+print has_kw(good_kw1, tree)
 
-print "KW: Del 'fox' --", del_kw("fox", kw_tree) # should return 'Word not found'
-print "KW: Del 'true' --", del_kw("true", kw_tree) # should return 'Keyword removed'
+print has_kw(bad_kw0, tree) 
+del_kw(bad_kw0, tree)       
 
-print "KW: Has 'true' --", get_kw("true", kw_tree) # should be False
+del_kw(good_kw0, tree)      
+print has_kw(good_kw0, tree)
+
+ptree(tree)
