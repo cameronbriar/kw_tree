@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import json
 
 # Our keyword tree basically a dictionary
@@ -16,10 +17,8 @@ def is_good_keyword(keyword):
 def is_good_tree(tree):
     return isinstance(tree, dict)
 
-
 def validate_kw_tree(kw, tree):
     return is_good_keyword(kw) and is_good_tree(tree)
-
  
 def add_kw(keyword, tree):
     print 'adding', keyword
@@ -28,7 +27,7 @@ def add_kw(keyword, tree):
             tree[letter] = {}
         tree = tree[letter]
     print keyword, 'was added'
-
+    return
 
 def has_kw(keyword, tree):
     print 'checking for', keyword
@@ -40,13 +39,11 @@ def has_kw(keyword, tree):
     print keyword, 'found'
     return True
 
-
 # ...
 def del_kw(keyword, tree):
     print 'deleting', keyword
 
     prev_pos = []
-
     for letter in keyword[:-1]:
         if tree.get(letter) != None:
             prev_pos.append(tree)
@@ -63,12 +60,10 @@ def del_kw(keyword, tree):
     print keyword, 'removed'
     return True
 
-# Pretty print a tree
 def ptree(tree):
     print json.dumps(tree, indent=1)
     
 # TEST
-
 tree = kw_tree
 good_kw0 = "test"
 good_kw1 = "true"
